@@ -239,6 +239,35 @@ button:disabled {
   background: rgba(0, 204, 142, 0.16);
 }
 
+.easter-heart-pop {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -46%) scale(0.82);
+  opacity: 0;
+  z-index: 9999;
+  pointer-events: none;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.22s ease, transform 0.28s ease;
+}
+
+.easter-heart-pop.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.easter-heart-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 6px 14px rgba(255, 82, 133, 0.6));
+  animation: easterHeartPulse 700ms ease-in-out infinite;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -447,6 +476,17 @@ button:disabled {
   }
 }
 
+@keyframes easterHeartPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.18);
+  }
+}
+
 @media (max-width: 980px) {
   .results {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -538,7 +578,8 @@ button:disabled {
   .participants-panel,
   .site-footer,
   .result-actions,
-  .message {
+  .message,
+  .easter-heart-pop {
     display: none !important;
   }
 
