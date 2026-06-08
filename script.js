@@ -140,6 +140,8 @@ function updateUI() {
 
   participants.forEach(name => {
     const item = document.createElement("li");
+    item.dataset.participant = name;
+
     item.innerHTML = `
       <span>${escapeHTML(name)}</span>
     `;
@@ -436,6 +438,32 @@ function scrollToResultsSection() {
   });
 }
 
+function showEstefiHeartPop() {
+  const existingPop = document.querySelector(".easter-heart-pop");
+  if (existingPop) {
+    existingPop.remove();
+  }
+
+  const pop = document.createElement("div");
+  pop.className = "easter-heart-pop";
+  pop.setAttribute("role", "status");
+  pop.setAttribute("aria-live", "polite");
+  pop.innerHTML = "<span class=\"easter-heart-icon\" aria-hidden=\"true\">&#10084;&#65039;</span>";
+
+  document.body.appendChild(pop);
+
+  window.requestAnimationFrame(() => {
+    pop.classList.add("show");
+  });
+
+  window.setTimeout(() => {
+    pop.classList.remove("show");
+    window.setTimeout(() => {
+      pop.remove();
+    }, 260);
+  }, 1400);
+}
+
 function getFlagMarkup(team) {
   const countryCode = teamFlagCodes[team];
 
@@ -463,6 +491,16 @@ resetBtn.addEventListener("click", resetAll);
 copyBtn.addEventListener("click", copyResults);
 downloadBtn.addEventListener("click", downloadResultsImage);
 printBtn.addEventListener("click", printResults);
+participantList.addEventListener("click", event => {
+  const item = event.target.closest("li");
+  if (!item) {
+    return;
+  }
+
+  if (item.dataset.participant === "Estefi") {
+    showEstefiHeartPop();
+  }
+});
 
 updateUI();
 results.innerHTML = "";
