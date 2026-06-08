@@ -8,27 +8,32 @@ const favorites = [
   "Alemania",
   "Países Bajos / Holanda",
   "Uruguay",
-  "Croacia"
+  "Croacia",
+  "Bélgica"
 ];
 
 const medium = [
-  "Bélgica",
   "Marruecos",
-  "Colombia",
+  "Corea del Sur",
   "Senegal",
   "México",
   "Estados Unidos",
   "Japón",
   "Suiza",
   "Ecuador",
-  "Turquía"
+  "Turquía",
+  "República Checa",
+  "Suecia"
 ];
 
 const lessLikely = [
+  "Austria",
+  "Colombia",
+  "Irán",
+  "Noruega",
   "Sudáfrica",
-  "República Checa",
-  "Canadá",
-  "Bosnia y Herzegovina",
+  "Canadá", 
+  "Bosnia",
   "Catar",
   "Haití",
   "Escocia",
@@ -36,7 +41,6 @@ const lessLikely = [
   "Australia",
   "Curazao",
   "Costa de Marfil",
-  "Suecia",
   "Túnez",
   "Egipto",
   "Nueva Zelanda",
@@ -45,7 +49,7 @@ const lessLikely = [
   "Irak",
   "Argelia",
   "Jordania",
-  "República Democrática del Congo / RD del Congo",
+  "República Democrática del Congo",
   "Uzbekistán",
   "Ghana",
   "Panamá"
@@ -61,7 +65,8 @@ const participants = [
   "Lucas",
   "Luis",
   "Julian",
-  "Allegra"
+  "Allegra",
+  "Jorgito"
 ];
 
 let lastResultsText = "";
@@ -94,7 +99,7 @@ const teamFlagCodes = {
   "Sudáfrica": "za",
   "República Checa": "cz",
   "Canadá": "ca",
-  "Bosnia y Herzegovina": "ba",
+  "Bosnia": "ba",
   "Catar": "qa",
   "Haití": "ht",
   "Escocia": "gb-sct",
@@ -111,10 +116,14 @@ const teamFlagCodes = {
   "Irak": "iq",
   "Argelia": "dz",
   "Jordania": "jo",
-  "República Democrática del Congo / RD del Congo": "cd",
+  "República Democrática del Congo": "cd",
   "Uzbekistán": "uz",
   "Ghana": "gh",
-  "Panamá": "pa"
+  "Panamá": "pa",
+  "Austria": "at",
+  "Corea del Sur": "kr",
+  "Noruega": "no",
+  "Irán": "ir"
 };
 
 const drawBtn = document.getElementById("drawBtn");
