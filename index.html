@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sorteo de la Quiniela - 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero fifa-gradient" data-purpose="hero-section">
+    <img
+      class="fifa-logo"
+      src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/500px-2026_FIFA_World_Cup_emblem.svg.png?_=20230519003440"
+      alt="Taça dourada da Copa do Mundo"
+      loading="eager"
+      decoding="async"
+      onerror="this.onerror=null;this.src='https://cdn.worldvectorlogo.com/logos/fifa-world-cup-2026-3.svg';"
+    />
+    <h1>
+      Sorteo de la <span>Quiniela</span>
+    </h1>
+    <p class="subtitle">
+      Sorteo para los 10 participantes confirmados. Cada uno recibirá 4 selecciones nacionales para la quiniela del Mundial 2026.
+    </p>
+  </header>
+
+  <main class="app">
+    <section class="panel participants-panel" data-purpose="participants-config">
+      <div class="panel-header">
+        <div>
+          <h2>Participantes Confirmados</h2>
+        </div>
+        <span id="counter" class="counter">10 participantes</span>
+      </div>
+
+      <ul id="participantList" class="participant-list"></ul>
+
+      <div class="actions">
+        <button id="drawBtn" class="primary" type="button">Sortear ahora</button>
+        <button id="resetBtn" class="secondary" type="button">Limpiar resultado</button>
+        <p id="message" class="message"></p>
+      </div>
+    </section>
+
+    <section id="resultsSection" class="results-section hidden" data-purpose="results-display">
+      <div class="panel-header">
+        <div>
+          <h2>Resultado del sorteo</h2>
+          <p>Cada tarjeta muestra al participante y sus 4 selecciones nacionales.</p>
+        </div>
+        <div class="result-actions">
+          <button id="copyBtn" class="secondary small" type="button">Copiar resultado</button>
+          <button id="downloadBtn" class="secondary small" type="button">Descargar imagen</button>
+          <button id="printBtn" class="secondary small" type="button">Imprimir</button>
+        </div>
+      </div>
+
+      <div id="results" class="results"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer" data-purpose="site-footer">
+    © 2026 Sorteo de Quiniela - Rumbo al Mundial 2026
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
