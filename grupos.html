@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grupos - Mundial 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Navegación principal">
+    <a class="nav-link" href="index.html">Resultado Oficial</a>
+    <a class="nav-link" href="sorteio.html">Sorteo</a>
+    <a class="nav-link active" href="grupos.html" aria-current="page">Grupos</a>
+    <a class="nav-link" href="partidas.html">Partidos</a>
+  </nav>
+
+  <header class="hero fifa-gradient" data-purpose="hero-section">
+    <img
+      class="fifa-logo"
+      src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/500px-2026_FIFA_World_Cup_emblem.svg.png?_=20230519003440"
+      alt="Emblema da Copa do Mundo"
+      loading="eager"
+      decoding="async"
+    />
+    <h1>Tabla de <span>Grupos</span></h1>
+    <p class="subtitle">
+      Clasificación de los grupos del Mundial 2026. Los primeros 2 de cada grupo avanzan a la siguiente ronda.
+    </p>
+  </header>
+
+  <main class="app">
+    <section class="results-section" data-purpose="groups-display">
+      <div class="panel-header">
+        <div>
+          <h2>Clasificación</h2>
+        </div>
+      </div>
+      <div id="groupsContainer" class="group-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer" data-purpose="site-footer">
+    © 2026 Sorteo de Quiniela &mdash; <span id="dataSource"></span>
+  </footer>
+
+  <script src="wc-data.js"></script>
+  <script src="grupos.js"></script>
+</body>
+</html>

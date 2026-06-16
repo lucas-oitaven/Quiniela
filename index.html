@@ -3,49 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sorteo de la Quiniela - 2026</title>
+  <title>Resultado Oficial - Quiniela 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <nav class="top-nav" aria-label="Navegación principal">
+    <a class="nav-link active" href="index.html" aria-current="page">Resultado Oficial</a>
+    <a class="nav-link" href="sorteio.html">Sorteo</a>
+    <a class="nav-link" href="grupos.html">Grupos</a>
+    <a class="nav-link" href="partidas.html">Partidos</a>
+  </nav>
+
   <header class="hero fifa-gradient" data-purpose="hero-section">
     <img
       class="fifa-logo"
       src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/500px-2026_FIFA_World_Cup_emblem.svg.png?_=20230519003440"
-      alt="Taça dourada da Copa do Mundo"
+      alt="Emblema del Mundial 2026"
       loading="eager"
       decoding="async"
       onerror="this.onerror=null;this.src='https://cdn.worldvectorlogo.com/logos/fifa-world-cup-2026-3.svg';"
     />
-    <h1>
-      Sorteo de la <span>Quiniela</span>
-    </h1>
+    <h1>Resultado <span>Oficial</span></h1>
     <p class="subtitle">
-      Sorteo para los 11 participantes confirmados. Cada uno recibirá 4 selecciones nacionales para la quiniela del Mundial 2026.
+      Registro oficial del sorteo de la quiniela para el Mundial 2026. Esta página es solo de consulta.
     </p>
   </header>
 
   <main class="app">
-    <section class="panel participants-panel" data-purpose="participants-config">
-      <div class="panel-header">
-        <div>
-          <h2>Participantes Confirmados</h2>
-        </div>
-        <span id="counter" class="counter">10 participantes</span>
-      </div>
-
-      <ul id="participantList" class="participant-list"></ul>
-
-      <div class="actions">
-        <button id="drawBtn" class="primary" type="button">Sortear ahora</button>
-        <button id="resetBtn" class="secondary" type="button">Limpiar resultado</button>
-        <p id="message" class="message"></p>
-      </div>
-    </section>
-
-    <section id="resultsSection" class="results-section hidden" data-purpose="results-display">
+    <section class="results-section" data-purpose="official-results-display">
       <div class="panel-header">
         <div>
           <h2>Resultado del sorteo</h2>
@@ -58,7 +46,7 @@
         </div>
       </div>
 
-      <div id="results" class="results"></div>
+      <div id="officialResults" class="results"></div>
     </section>
   </main>
 
@@ -67,6 +55,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="script.js"></script>
+  <script src="wc-data.js"></script>
+  <script src="official-result.js"></script>
 </body>
 </html>

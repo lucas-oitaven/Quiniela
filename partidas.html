@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partidas - Mundial 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Navegación principal">
+    <a class="nav-link" href="index.html">Resultado Oficial</a>
+    <a class="nav-link" href="sorteio.html">Sorteo</a>
+    <a class="nav-link" href="grupos.html">Grupos</a>
+    <a class="nav-link active" href="partidas.html" aria-current="page">Partidos</a>
+  </nav>
+
+  <header class="hero fifa-gradient" data-purpose="hero-section">
+    <img
+      class="fifa-logo"
+      src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/500px-2026_FIFA_World_Cup_emblem.svg.png?_=20230519003440"
+      alt="Emblema da Copa do Mundo"
+      loading="eager"
+      decoding="async"
+    />
+    <h1>Resultados y <span>Partidos</span></h1>
+    <p class="subtitle">
+      Todos los partidos del Mundial 2026 agrupados por fecha, con marcadores y horarios.
+    </p>
+  </header>
+
+  <main class="app">
+    <section class="results-section" data-purpose="matches-display">
+      <div class="panel-header">
+        <div>
+          <h2>Partidos</h2>
+          <p>Fase de grupos, octavos, cuartos, semifinal y final.</p>
+        </div>
+      </div>
+
+      <div class="filter-bar" role="group" aria-label="Filtrar partidos">
+        <button class="filter-tab active" data-filter="upcoming" type="button">Próximos</button>
+        <button class="filter-tab" data-filter="done" type="button">Terminados</button>
+        <button class="filter-tab" data-filter="all" type="button">Todos</button>
+      </div>
+
+      <div id="matchesContainer"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer" data-purpose="site-footer">
+    © 2026 Sorteo de Quiniela &mdash; <span id="dataSource"></span>
+  </footer>
+
+  <script src="wc-data.js"></script>
+  <script src="partidas.js"></script>
+</body>
+</html>
