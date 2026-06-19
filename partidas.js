@@ -6,6 +6,7 @@ const MO = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct"
 
 let allMatches = [];
 let activeFilter = "upcoming";
+let sortNewestFirst = true;
 
 function formatDate(dateStr) {
   if (!dateStr) return "Fecha sin definir";
@@ -85,6 +86,48 @@ function getFiltered() {
   }
 }
 
+function getMatchTimestamp(m) {
+  const date = m.date || "0000-00-00";
+  const timeRaw = (m.time || "").split(" ")[0] || "00:00";
+  const [hh = "00", mm = "00"] = timeRaw.split(":");
+  const normalized = `${date}T${hh.padStart(2, "0")}:${mm.padStart(2, "0")}:00`;
+  const ts = Date.parse(normalized);
+  return Number.isNaN(ts) ? 0 : ts;
+}
+
+function getDateOnlyTimestamp(m) {
+  const date = m.date || "0000-00-00";
+  const ts = Date.parse(`${date}T00:00:00`);
+  return Number.isNaN(ts) ? 0 : ts;
+}
+
+function getTodayStartTimestamp() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return now.getTime();
+}
+
+function compareFromToday(a, b) {
+  const todayStart = getTodayStartTimestamp();
+  const aDay = getDateOnlyTimestamp(a);
+  const bDay = getDateOnlyTimestamp(b);
+  const aIsTodayOrFuture = aDay >= todayStart;
+  const bIsTodayOrFuture = bDay >= todayStart;
+
+  // Today/future dates come first; past dates go to the end.
+  if (aIsTodayOrFuture !== bIsTodayOrFuture) {
+    return aIsTodayOrFuture ? -1 : 1;
+  }
+
+  if (aIsTodayOrFuture && bIsTodayOrFuture) {
+    // Upcoming timeline: today, tomorrow, and so on.
+    return getMatchTimestamp(a) - getMatchTimestamp(b);
+  }
+
+  // Past timeline at the end: latest past dates first.
+  return getMatchTimestamp(b) - getMatchTimestamp(a);
+}
+
 function renderMatches() {
   const container = document.getElementById("matchesContainer");
   const filtered = getFiltered();
@@ -94,8 +137,11 @@ function renderMatches() {
     return;
   }
 
-  // Sort chronologically then group by date
-  const sorted = [...filtered].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  // Sort by date/time with user-selected order, then group by date.
+  const sorted = [...filtered].sort((a, b) => {
+    const diff = compareFromToday(a, b);
+    return sortNewestFirst ? diff : -diff;
+  });
   const byDate = new Map();
   sorted.forEach(m => {
     const key = m.date || "0000-00-00";
@@ -131,6 +177,18 @@ function setupFilters() {
       renderMatches();
     });
   });
+
+  const sortOrderBtn = document.getElementById("sortOrderBtn");
+  if (sortOrderBtn) {
+    sortOrderBtn.addEventListener("click", () => {
+      sortNewestFirst = !sortNewestFirst;
+      sortOrderBtn.textContent = sortNewestFirst
+        ? "Más recientes primero"
+        : "Más antiguos primero";
+      sortOrderBtn.setAttribute("aria-pressed", sortNewestFirst ? "true" : "false");
+      renderMatches();
+    });
+  }
 }
 
 async function initPartidas() {
