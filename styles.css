@@ -764,17 +764,32 @@ button:disabled {
     padding-right: 10px;
   }
 
+  .match-card-body {
+    gap: 6px;
+  }
+
+  .match-score-wrap {
+    min-width: 76px;
+    padding: 0 2px;
+  }
+
   .match-score-main {
-    font-size: 2.05rem;
+    font-size: 1.85rem;
+  }
+
+  .match-score-note {
+    font-size: 0.62rem;
+    line-height: 1.1;
   }
 
   .match-flag .flag {
-    width: 40px;
-    height: 28px;
+    width: 34px;
+    height: 24px;
   }
 
   .match-team-name {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
+    line-height: 1.15;
   }
 
   .match-badge {
@@ -934,6 +949,32 @@ button:disabled {
   border-color: transparent;
 }
 
+.filter-order-btn {
+  margin-left: auto;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 204, 142, 0.35);
+  background: rgba(0, 204, 142, 0.12);
+  color: #dffaf1;
+  font-family: "Anybody", sans-serif;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.filter-order-btn:hover {
+  background: rgba(0, 204, 142, 0.2);
+}
+
+@media (max-width: 720px) {
+  .filter-order-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
 /* ===================================================
    MATCH DAY SECTION
    =================================================== */
@@ -1049,6 +1090,9 @@ button:disabled {
   letter-spacing: 0.02em;
   color: #12372a;
   line-height: 1.2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .match-score-wrap {
@@ -1061,6 +1105,9 @@ button:disabled {
 }
 
 .match-score-main {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 2.3rem;
   font-weight: 900;
   color: var(--header-strong);
