@@ -1,4 +1,4 @@
-﻿// grupos.js — group standings only
+﻿﻿// grupos.js — group standings only
 // depends on wc-data.js being loaded first
 
 function computeStandings(matches) {
