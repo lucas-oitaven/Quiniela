@@ -115,6 +115,83 @@ function wcFormatMexicoTime(timeValue) {
   return `${resultHours}:${resultMinutes}`;
 }
 
+
+/**
+ * Calculates only confirmed group-stage outcomes for display purposes.
+ * - The first two places are treated as qualified in the current standings.
+ * - Fourth place turns eliminated only after its entire group has finished.
+ * - The current eight best third-place teams are exposed separately for display
+ *   (yellow). This is a live table position, not a confirmed qualification.
+ * - Third place turns qualified/eliminated only after every group match has finished,
+ *   because the eight best third-place teams advance in the 2026 format.
+ */
+function wcComputeGroupProgress(matches) {
+  const groupMatches = (matches || []).filter(match => match && match.group);
+  const teamsByGroup = new Map();
+
+  groupMatches.forEach(match => {
+    const group = match.group;
+    if (!teamsByGroup.has(group)) teamsByGroup.set(group, new Map());
+    const table = teamsByGroup.get(group);
+
+    [match.team1, match.team2].filter(Boolean).forEach(team => {
+      if (!table.has(team)) table.set(team, { team, pts: 0, gd: 0, gf: 0 });
+    });
+
+    if (!match.score?.ft) return;
+    const [g1, g2] = match.score.ft;
+    const home = table.get(match.team1);
+    const away = table.get(match.team2);
+    if (!home || !away) return;
+
+    home.gf += g1;
+    away.gf += g2;
+    home.gd += g1 - g2;
+    away.gd += g2 - g1;
+    if (g1 > g2) home.pts += 3;
+    else if (g2 > g1) away.pts += 3;
+    else { home.pts += 1; away.pts += 1; }
+  });
+
+  const rank = list => [...list].sort((a, b) =>
+    b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team)
+  );
+  const groupIsComplete = group => groupMatches.filter(match => match.group === group).every(match => Boolean(match.score?.ft));
+  const allGroupsComplete = groupMatches.length > 0 && groupMatches.every(match => Boolean(match.score?.ft));
+  const qualifiedTeams = new Set();
+  const eliminatedTeams = new Set();
+  const thirdPlaces = [];
+  const bestThirdTeams = new Set();
+
+  teamsByGroup.forEach((table, group) => {
+    const standings = rank(table.values());
+    standings.slice(0, 2).forEach(entry => qualifiedTeams.add(entry.team));
+    if (standings[2]) thirdPlaces.push(standings[2]);
+    if (groupIsComplete(group) && standings[3]) eliminatedTeams.add(standings[3].team);
+  });
+
+  // This ranking is intentionally calculated from the data available now.
+  // It gives the current provisional top 8 third places a yellow state,
+  // even when their own group still has matches pending.
+  const currentBestThirds = new Set(rank(thirdPlaces).slice(0, 8).map(entry => entry.team));
+  currentBestThirds.forEach(team => bestThirdTeams.add(team));
+
+  if (allGroupsComplete) {
+    thirdPlaces.forEach(entry => {
+      if (currentBestThirds.has(entry.team)) qualifiedTeams.add(entry.team);
+      else eliminatedTeams.add(entry.team);
+    });
+  }
+
+  qualifiedTeams.forEach(team => {
+    eliminatedTeams.delete(team);
+    bestThirdTeams.delete(team);
+  });
+  eliminatedTeams.forEach(team => bestThirdTeams.delete(team));
+
+  return { qualifiedTeams, eliminatedTeams, bestThirdTeams };
+}
+
 async function wcLoadData() {
   const response = await fetch(WC_ENDPOINT);
 

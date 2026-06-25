@@ -1,4 +1,4 @@
-﻿﻿// grupos.js — group standings only
+﻿// grupos.js — group standings only
 // depends on wc-data.js being loaded first
 
 function computeStandings(matches) {
@@ -51,15 +51,24 @@ function computeStandings(matches) {
     }));
 }
 
-function renderGroupCard(group) {
+function renderGroupCard(group, progress) {
   const card = document.createElement("article");
   card.className = "result-card";
 
   const rows = group.standings
     .map((t, i) => {
-      const isQ = i < 2;
+      const isQ = progress?.qualifiedTeams?.has(t.team) ?? i < 2;
+      const isEliminated = progress?.eliminatedTeams?.has(t.team) ?? false;
+      const isBestThird = progress?.bestThirdTeams?.has(t.team) ?? false;
+      const stateClass = isQ
+        ? " standings-qualified"
+        : isEliminated
+          ? " standings-eliminated"
+          : isBestThird
+            ? " standings-best-third"
+            : "";
       return `
-        <div class="standings-row${isQ ? " standings-qualified" : ""}">
+        <div class="standings-row${stateClass}">
           <span class="standings-pos">${i + 1}</span>
           <span class="standings-team-cell">
             <span class="flag" aria-hidden="true">${wcGetFlag(t.team, "sm")}</span>
@@ -96,10 +105,14 @@ async function initGroups() {
 
   try {
     const json = await wcLoadData();
-    const groups = computeStandings(json.matches || []);
+    const matches = json.matches || [];
+    const groups = computeStandings(matches);
+    const progress = typeof wcComputeGroupProgress === "function"
+      ? wcComputeGroupProgress(matches)
+      : { qualifiedTeams: new Set(), eliminatedTeams: new Set(), bestThirdTeams: new Set() };
 
     container.innerHTML = "";
-    groups.forEach(g => container.appendChild(renderGroupCard(g)));
+    groups.forEach(g => container.appendChild(renderGroupCard(g, progress)));
 
     if (sourceEl) {
       sourceEl.innerHTML = `Fuente: <a class="source-link" href="https://github.com/openfootball/worldcup.json" target="_blank" rel="noopener">openfootball/worldcup.json</a>`;

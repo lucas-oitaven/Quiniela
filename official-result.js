@@ -215,57 +215,19 @@ function normalizeTeamKey(name) {
   return TEAM_NAME_ALIASES[base] || base;
 }
 
-function computeQualifiedTeamKeys(matches) {
-  const teamMap = new Map();
+function computeDrawTeamProgress(matches) {
+  const progress = typeof wcComputeGroupProgress === "function"
+    ? wcComputeGroupProgress(matches)
+    : { qualifiedTeams: new Set(), eliminatedTeams: new Set(), bestThirdTeams: new Set() };
 
-  matches.forEach(m => {
-    if (!m.group) return;
-    [m.team1, m.team2].forEach(t => {
-      if (!teamMap.has(t)) {
-        teamMap.set(t, { group: m.group, pts: 0, gd: 0, gf: 0 });
-      }
-    });
-  });
-
-  matches.forEach(m => {
-    if (!m.group || !m.score || !m.score.ft) return;
-
-    const [g1, g2] = m.score.ft;
-    const s1 = teamMap.get(m.team1);
-    const s2 = teamMap.get(m.team2);
-    if (!s1 || !s2) return;
-
-    s1.gf += g1;
-    s2.gf += g2;
-    s1.gd += g1 - g2;
-    s2.gd += g2 - g1;
-
-    if (g1 > g2) s1.pts += 3;
-    else if (g2 > g1) s2.pts += 3;
-    else {
-      s1.pts++;
-      s2.pts++;
-    }
-  });
-
-  const byGroup = new Map();
-  teamMap.forEach((stats, team) => {
-    if (!byGroup.has(stats.group)) byGroup.set(stats.group, []);
-    byGroup.get(stats.group).push({ team, ...stats });
-  });
-
-  const qualified = new Set();
-  byGroup.forEach(teams => {
-    teams
-      .sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf)
-      .slice(0, 2)
-      .forEach(t => qualified.add(normalizeTeamKey(t.team)));
-  });
-
-  return qualified;
+  return {
+    qualifiedTeamKeys: new Set([...progress.qualifiedTeams].map(normalizeTeamKey)),
+    eliminatedTeamKeys: new Set([...progress.eliminatedTeams].map(normalizeTeamKey)),
+    bestThirdTeamKeys: new Set([...progress.bestThirdTeams].map(normalizeTeamKey)),
+  };
 }
 
-function renderOfficialResults(qualifiedTeamKeys = new Set()) {
+function renderOfficialResults(qualifiedTeamKeys = new Set(), eliminatedTeamKeys = new Set(), bestThirdTeamKeys = new Set()) {
   const container = document.getElementById("officialResults");
   if (!container) {
     return;
@@ -280,9 +242,19 @@ function renderOfficialResults(qualifiedTeamKeys = new Set()) {
 
     const teamsMarkup = entry.teams
       .map(team => {
-        const isQualified = qualifiedTeamKeys.has(normalizeTeamKey(team));
+        const teamKey = normalizeTeamKey(team);
+        const isQualified = qualifiedTeamKeys.has(teamKey);
+        const isEliminated = eliminatedTeamKeys.has(teamKey);
+        const isBestThird = bestThirdTeamKeys.has(teamKey);
+        const stateClass = isQualified
+          ? "team-qualified"
+          : isEliminated
+            ? "team-eliminated"
+            : isBestThird
+              ? "team-best-third"
+              : "";
         return `
-        <li${isQualified ? ' class="team-qualified"' : ""}>
+        <li${stateClass ? ` class="${stateClass}"` : ""}>
           <span class="flag" aria-hidden="true">${getFlagMarkup(team)}</span>
           <span class="team-name">${escapeHTML(team)}</span>
         </li>
@@ -356,17 +328,22 @@ function setupActions() {
 
 async function initOfficialResults() {
   let qualifiedTeamKeys = new Set();
+  let eliminatedTeamKeys = new Set();
+  let bestThirdTeamKeys = new Set();
 
   if (typeof wcLoadData === "function") {
     try {
       const json = await wcLoadData();
-      qualifiedTeamKeys = computeQualifiedTeamKeys(json.matches || []);
+      const progress = computeDrawTeamProgress(json.matches || []);
+      qualifiedTeamKeys = progress.qualifiedTeamKeys;
+      eliminatedTeamKeys = progress.eliminatedTeamKeys;
+      bestThirdTeamKeys = progress.bestThirdTeamKeys;
     } catch {
       // Keep rendering even if live data is unavailable.
     }
   }
 
-  renderOfficialResults(qualifiedTeamKeys);
+  renderOfficialResults(qualifiedTeamKeys, eliminatedTeamKeys, bestThirdTeamKeys);
 
   setupActions();
 }
