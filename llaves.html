@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Llaves - Mundial 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Navegación principal">
+    <a class="nav-link" href="index.html">Resultado Oficial</a>
+    <a class="nav-link" href="sorteio.html">Sorteo</a>
+    <a class="nav-link" href="grupos.html">Grupos</a>
+    <a class="nav-link" href="partidas.html">Partidos</a>
+    <a class="nav-link active" href="llaves.html" aria-current="page">Llaves</a>
+  </nav>
+
+  <header class="hero fifa-gradient" data-purpose="hero-section">
+    <img class="fifa-logo"
+      src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/500px-2026_FIFA_World_Cup_emblem.svg.png?_=20230519003440"
+      alt="Emblema del Mundial 2026" loading="eager" decoding="async"
+      onerror="this.onerror=null;this.src='https://cdn.worldvectorlogo.com/logos/fifa-world-cup-2026-3.svg';" />
+    <h1>Llaves de <span>Eliminación</span></h1>
+    <p class="subtitle">Camino completo hacia la final del Mundial 2026: ronda de 32, octavos, cuartos, semifinales y final.</p>
+  </header>
+
+  <main class="app">
+    <section class="results-section bracket-section" data-purpose="knockout-bracket-display">
+      <div class="panel-header bracket-panel-header">
+        <div>
+          <h2>Fase eliminatoria</h2>
+          <p>Desliza horizontalmente para recorrer la llave completa.</p>
+        </div>
+        <span class="bracket-scroll-hint" aria-hidden="true">← Desliza →</span>
+      </div>
+
+      <div id="bracketStatus" class="message" role="status" aria-live="polite">Cargando llaves...</div>
+      <div class="bracket-scroll" tabindex="0" aria-label="Llave de eliminación directa. Desliza horizontalmente para ver todas las rondas.">
+        <div id="bracketContainer" class="knockout-bracket" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">© 2026 Sorteo de Quiniela &mdash; <span id="dataSource"></span></footer>
+  <script src="wc-data.js"></script>
+  <script src="llaves.js"></script>
+</body>
+</html>
