@@ -1400,3 +1400,47 @@ button:disabled {
     font-size: 0.7rem;
   }
 }
+
+
+/* ===================================================
+   CONFIRMED ELIMINATION STATES
+   Red is used only when a team is mathematically out according to
+   completed group-stage results; pending teams stay neutral.
+   =================================================== */
+.pick-list li.team-eliminated {
+  background: rgba(235, 79, 79, 0.16);
+  border-color: rgba(220, 65, 65, 0.48);
+}
+
+.standings-eliminated {
+  background: rgba(235, 79, 79, 0.16);
+  border-left: 3px solid rgba(220, 65, 65, 0.60);
+}
+
+/* Current top 8 third-place teams: provisional status, based on the
+   standings returned by the same source. Yellow never overrides green or red. */
+.pick-list li.team-best-third {
+  background: rgba(244, 191, 54, 0.20);
+  border-color: rgba(223, 164, 24, 0.56);
+}
+
+.standings-best-third {
+  background: rgba(244, 191, 54, 0.20);
+  border-left: 3px solid rgba(223, 164, 24, 0.72);
+}
+
+@media (max-width: 760px) {
+  /* The bracket cards use absolute placement. Increasing the stage height
+     creates real vertical breathing room while preserving the connectors. */
+  .bracket-canvas {
+    min-height: 1800px;
+  }
+
+  .bracket-stage-matches {
+    height: 1700px;
+  }
+
+  .bracket-match--third {
+    bottom: 54px;
+  }
+}
