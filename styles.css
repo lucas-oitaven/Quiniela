@@ -1271,7 +1271,7 @@ button:disabled {
 .bracket-team {
   min-height: 32px;
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) 20px;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
   align-items: center;
   gap: 7px;
   padding: 6px 8px;
@@ -1284,8 +1284,14 @@ button:disabled {
 
 .bracket-team + .bracket-team { border-top: 1px solid #d8e8e0; }
 .bracket-team--winner { background: rgba(0, 204, 142, 0.14); }
+.bracket-team--eliminated {
+  background: rgba(235, 79, 79, 0.16);
+}
+.bracket-team--eliminated .bracket-team-score {
+  color: #b43a3a;
+}
 .bracket-team-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bracket-team-score { color: #0a6e4d; font-size: 0.82rem; font-style: italic; text-align: right; }
+.bracket-team-score { color: #0a6e4d; font-size: 0.72rem; font-style: italic; text-align: right; white-space: nowrap; }
 .bracket-flag.flag { width: 22px; height: 15px; }
 
 .bracket-seed {

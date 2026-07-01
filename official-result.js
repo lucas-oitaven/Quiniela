@@ -116,7 +116,11 @@ const TEAM_NAME_ALIASES = {
   costademarfil: "ivorycoast",
 
   drcongo: "drcongo",
+  democraticrepublicofthecongo: "drcongo",
   republicademocraticadelcongo: "drcongo",
+
+  curacao: "curacao",
+  curazao: "curacao",
 
   capeverde: "capeverde",
   caboverde: "capeverde",
@@ -219,15 +223,24 @@ function computeDrawTeamProgress(matches) {
   const progress = typeof wcComputeGroupProgress === "function"
     ? wcComputeGroupProgress(matches)
     : { qualifiedTeams: new Set(), eliminatedTeams: new Set(), bestThirdTeams: new Set() };
+  const knockoutEliminatedTeams = typeof wcComputeKnockoutEliminatedTeams === "function"
+    ? wcComputeKnockoutEliminatedTeams(matches)
+    : new Set();
 
   return {
     qualifiedTeamKeys: new Set([...progress.qualifiedTeams].map(normalizeTeamKey)),
     eliminatedTeamKeys: new Set([...progress.eliminatedTeams].map(normalizeTeamKey)),
     bestThirdTeamKeys: new Set([...progress.bestThirdTeams].map(normalizeTeamKey)),
+    knockoutEliminatedTeamKeys: new Set([...knockoutEliminatedTeams].map(normalizeTeamKey)),
   };
 }
 
-function renderOfficialResults(qualifiedTeamKeys = new Set(), eliminatedTeamKeys = new Set(), bestThirdTeamKeys = new Set()) {
+function renderOfficialResults(
+  qualifiedTeamKeys = new Set(),
+  eliminatedTeamKeys = new Set(),
+  bestThirdTeamKeys = new Set(),
+  knockoutEliminatedTeamKeys = new Set()
+) {
   const container = document.getElementById("officialResults");
   if (!container) {
     return;
@@ -244,13 +257,13 @@ function renderOfficialResults(qualifiedTeamKeys = new Set(), eliminatedTeamKeys
       .map(team => {
         const teamKey = normalizeTeamKey(team);
         const isQualified = qualifiedTeamKeys.has(teamKey);
-        const isEliminated = eliminatedTeamKeys.has(teamKey);
+        const isEliminated = eliminatedTeamKeys.has(teamKey) || knockoutEliminatedTeamKeys.has(teamKey);
         const isBestThird = bestThirdTeamKeys.has(teamKey);
-        const stateClass = isQualified
-          ? "team-qualified"
-          : isEliminated
+        const stateClass = isEliminated
             ? "team-eliminated"
-            : isBestThird
+            : isQualified
+              ? "team-qualified"
+              : isBestThird
               ? "team-best-third"
               : "";
         return `
@@ -330,6 +343,7 @@ async function initOfficialResults() {
   let qualifiedTeamKeys = new Set();
   let eliminatedTeamKeys = new Set();
   let bestThirdTeamKeys = new Set();
+  let knockoutEliminatedTeamKeys = new Set();
 
   if (typeof wcLoadData === "function") {
     try {
@@ -338,12 +352,13 @@ async function initOfficialResults() {
       qualifiedTeamKeys = progress.qualifiedTeamKeys;
       eliminatedTeamKeys = progress.eliminatedTeamKeys;
       bestThirdTeamKeys = progress.bestThirdTeamKeys;
+      knockoutEliminatedTeamKeys = progress.knockoutEliminatedTeamKeys;
     } catch {
       // Keep rendering even if live data is unavailable.
     }
   }
 
-  renderOfficialResults(qualifiedTeamKeys, eliminatedTeamKeys, bestThirdTeamKeys);
+  renderOfficialResults(qualifiedTeamKeys, eliminatedTeamKeys, bestThirdTeamKeys, knockoutEliminatedTeamKeys);
 
   setupActions();
 }
