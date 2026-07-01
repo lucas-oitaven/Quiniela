@@ -14,6 +14,7 @@ const WC_TEAM_FLAGS = {
   "Qatar": "qa", "Switzerland": "ch", "Belgium": "be", "New Zealand": "nz",
   // Group D (England + Ecuador confirmed)
   "England": "gb-eng", "Ecuador": "ec", "Uzbekistan": "uz", "DR Congo": "cd",
+  "Democratic Republic of the Congo": "cd",
   // Group E
   "France": "fr", "Sweden": "se", "Haiti": "ht", "Saudi Arabia": "sa",
   // Group F
@@ -28,6 +29,7 @@ const WC_TEAM_FLAGS = {
   "Argentina": "ar", "Uruguay": "uy", "Egypt": "eg", "Iran": "ir",
   // Group K
   "Portugal": "pt", "Norway": "no", "Ivory Coast": "ci", "Curaçao": "cw",
+  "Curacao": "cw", "Curazao": "cw",
   // Group L
   "Australia": "au", "Jordan": "jo", "Tunisia": "tn", "Cabo Verde": "cv",
   // Additional / alternate names
@@ -72,6 +74,19 @@ const WC_TEAM_FLAGS = {
   "New Caledonia": "nc",
 };
 
+const WC_TEAM_FLAG_NAME_ALIASES = {
+  democraticrepublicofthecongo: "DR Congo",
+  republicademocraticadelcongo: "DR Congo",
+  drcongo: "DR Congo",
+  curacao: "Curaçao",
+  curazao: "Curaçao",
+};
+
+const WC_TEAM_DISPLAY_NAME_ALIASES = {
+  "Democratic Republic of the Congo": "DR Congo",
+  "República Democrática del Congo": "DR Congo",
+};
+
 function wcEscapeHTML(text) {
   return String(text)
     .replaceAll("&", "&amp;")
@@ -81,8 +96,25 @@ function wcEscapeHTML(text) {
     .replaceAll("'", "&#039;");
 }
 
+function wcNormalizeTeamName(team) {
+  const raw = String(team || "").trim();
+  const base = raw
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]/g, "");
+  return WC_TEAM_FLAG_NAME_ALIASES[base] || raw;
+}
+
+function wcGetDisplayTeamName(team) {
+  const normalized = wcNormalizeTeamName(team);
+  return WC_TEAM_DISPLAY_NAME_ALIASES[normalized] || normalized;
+}
+
 function wcGetFlag(team, size) {
-  const code = WC_TEAM_FLAGS[team];
+  const normalizedTeam = wcNormalizeTeamName(team);
+  const code = WC_TEAM_FLAGS[team] || WC_TEAM_FLAGS[normalizedTeam];
   if (!code) {
     return '<span class="flag-fallback">?</span>';
   }
@@ -92,6 +124,63 @@ function wcGetFlag(team, size) {
   const src = `https://flagcdn.com/${code}.svg`;
   const alt = `Bandera de ${wcEscapeHTML(team)}`;
   return `<img class="flag-svg" src="${src}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async">`;
+}
+
+function wcNormalizeRoundKey(round) {
+  const value = String(round || "").trim().toLowerCase();
+  if (!value) return "";
+  if (value === "group") return "group";
+  if (["round of 32", "round 32", "r32", "dieciseisavos", "1/16"].includes(value)) return "round32";
+  if (["round of 16", "round 16", "r16", "octavos", "1/8"].includes(value)) return "round16";
+  if (["quarterfinal", "quarter", "qf", "cuartos", "1/4"].includes(value)) return "quarterfinal";
+  if (["semifinal", "semi", "sf"].includes(value)) return "semifinal";
+  if (value === "final") return "final";
+  if (["third place", "third", "3rd", "tercer lugar", "third-place"].includes(value)) return "third";
+  return "";
+}
+
+function wcGetWinnerFromMatch(match) {
+  if (!match?.score?.ft || !match.team1 || !match.team2) return "";
+
+  const [ft1, ft2] = match.score.ft;
+  if (ft1 > ft2) return match.team1;
+  if (ft2 > ft1) return match.team2;
+
+  if (Array.isArray(match.score.p) && match.score.p.length >= 2) {
+    const [p1, p2] = match.score.p;
+    if (p1 > p2) return match.team1;
+    if (p2 > p1) return match.team2;
+  }
+
+  if (Array.isArray(match.score.et) && match.score.et.length >= 2) {
+    const [et1, et2] = match.score.et;
+    if (et1 > et2) return match.team1;
+    if (et2 > et1) return match.team2;
+  }
+
+  return "";
+}
+
+function wcComputeKnockoutEliminatedTeams(matches) {
+  const eliminatedTeams = new Set();
+
+  (matches || []).forEach(match => {
+    const roundKey = wcNormalizeRoundKey(match?.round);
+    if (!roundKey || roundKey === "group") return;
+
+    const winner = wcGetWinnerFromMatch(match);
+    if (!winner || !match.team1 || !match.team2) return;
+
+    const loser = winner === match.team1
+      ? match.team2
+      : winner === match.team2
+        ? match.team1
+        : "";
+
+    if (loser) eliminatedTeams.add(loser);
+  });
+
+  return eliminatedTeams;
 }
 
 function wcFormatMexicoTime(timeValue) {
